@@ -1,10 +1,8 @@
 'use strict';
 
 function calculateDeposit(monthsOfInterestAccrual, initialDepositAmount) {
-    const depositAmountWithInterest = initialDepositAmount * (1 + annualInterestRate * monthsOfInterestAccrual / monthCalendarYear / 100) ** numberOfInterestPeriods; // сумма вклада с процентами
-    const interestAmount = depositAmountWithInterest - initialDepositAmount; // сумма процентов (доход)
     const numberOfInterestPeriods = monthsOfInterestAccrual; // число периодов начисления процентов
-    let annualInterestRate = ['2', '2.2', '2.3', '2.6', '2.7']; // годовая процентная ставка
+    let annualInterestRate = [2, 2.2, 2.3, 2.6, 2.7]; // годовая процентная ставка
     const monthCalendarYear = 12; // количество месяцев в календарном году
 
     if (numberOfInterestPeriods >= 3) {
@@ -21,8 +19,10 @@ function calculateDeposit(monthsOfInterestAccrual, initialDepositAmount) {
     }
     else if (numberOfInterestPeriods >= 18) {
         annualInterestRate = annualInterestRate[4];
-    }
-
+    };
+    const depositAmountWithInterest = initialDepositAmount * (1 + annualInterestRate * monthsOfInterestAccrual / monthCalendarYear / 100) ** numberOfInterestPeriods; // сумма вклада с процентами
+    const interestAmount = depositAmountWithInterest - initialDepositAmount; // сумма процентов (доход)
+    console.log(annualInterestRate);
     return {
         depositAmountWithInterest,
         interestAmount,
@@ -39,15 +39,15 @@ function handleSubmit(evt) {
     profitEl.textContent = '';
     percentEl.textContent = '';
 
-    const depositAmount = Number(depositAmountErrorEl.value);
+    const depositAmount = Number(initialDepositAmountEl.value);
     if (Number.isNaN(depositAmount)) {
         depositAmountErrorEl.textContent = `Неверное значение. Введите число, например: 10000`;
         return;
     }
 
-    const otherAmount = Number(otherAmountErrorEl.value);
+    const otherAmount = Number(monthsOfInterestAccrualEl.value);
     if (Number.isNaN(otherAmount)) {
-        otherAmountErrorEl.textContent = `Неверное значение. Введите число, например: 10000`;
+        otherAmountErrorEl.textContent = `Неверное значение. Введите число, например: 12`;
         return;
     }
 
@@ -60,10 +60,10 @@ function handleSubmit(evt) {
 const formEl = document.getElementById('deposit-form');
 formEl.onsubmit = handleSubmit;
 
-const monthsOfInterestAccrual = document.getElementById('period-input'); // количество месяцев начисления процентов по привлеченному вкладу
-const initialDepositAmount = document.getElementById('amount-input'); // первоначальная сумма вклада (капитал)
+const monthsOfInterestAccrualEl = document.getElementById('period-input'); // количество месяцев начисления процентов по привлеченному вкладу
+const initialDepositAmountEl = document.getElementById('amount-input'); // первоначальная сумма вклада (капитал)
 const depositAmountErrorEl = document.getElementById('deposit-amount-error');
 const otherAmountErrorEl = document.getElementById('other-amount-error');
 const totalEl = document.getElementById('total');
-const profitEl = document.getElementById('other-cashback');
-const percentEl = document.getElementById('total-cashback');
+const profitEl = document.getElementById('profit');
+const percentEl = document.getElementById('percent');
