@@ -5,7 +5,7 @@ function calculateDeposit(initialDepositAmount, monthsOfInterestAccrual) {
     const numberOfInterestPeriods = monthsOfInterestAccrual; // число периодов начисления процентов
     const termOfTheDeposit = [3, 6, 9, 12, 18];
     const annualInterestRate = [0, 2.0, 2.2, 2.3, 2.6, 2.7]; // годовая процентная ставка
-    let annualsInterestRate = annualInterestRate[5];
+    let annualsInterestRate = annualInterestRate[0];
     if (monthsOfInterestAccrual < termOfTheDeposit[0]) {
         annualsInterestRate = annualInterestRate[0];
     } else if (monthsOfInterestAccrual < termOfTheDeposit[1]) {
@@ -16,12 +16,16 @@ function calculateDeposit(initialDepositAmount, monthsOfInterestAccrual) {
         annualsInterestRate = annualInterestRate[3];
     } else if (monthsOfInterestAccrual < termOfTheDeposit[4]) {
         annualsInterestRate = annualInterestRate[4];
+    }else if (monthsOfInterestAccrual === termOfTheDeposit[4]) {
+        annualsInterestRate = annualInterestRate[5];
     }
     const depositAmountWithInterest = initialDepositAmount * (1 + annualsInterestRate * (monthsOfInterestAccrual / monthsOfInterestAccrual) / monthCalendarYear / 100) ** numberOfInterestPeriods; // сумма вклада с процентами
     const interestAmount = depositAmountWithInterest - initialDepositAmount; // сумма процентов (доход)
+    const limit = 50000000;
+    const limitInterestAmount = (limit * (1 + annualsInterestRate * (monthsOfInterestAccrual / monthsOfInterestAccrual) / monthCalendarYear / 100) ** numberOfInterestPeriods) - limit;
     return {
-        depositAmountWithInterest,
-        interestAmount,
+        depositAmountWithInterest: depositAmountWithInterest > limit ? limit : depositAmountWithInterest,
+        interestAmount: interestAmount > limitInterestAmount ? limitInterestAmount : interestAmount,
         annualsInterestRate,
     };
 }
@@ -37,13 +41,13 @@ function handleSubmit(evt) {
 
     const depositAmount = Number(initialDepositAmountEl.value);
     if (Number.isNaN(depositAmount)) {
-        depositAmountErrorEl.textContent = `Неверное значение. Введите число, например: 10000`;
+        depositAmountErrorEl.textContent = 'Неверное значение. Введите число, например: 15000';
         return;
     }
 
     const otherAmount = Number(monthsOfInterestAccrualEl.value);
     if (Number.isNaN(otherAmount)) {
-        otherAmountErrorEl.textContent = `Неверное значение. Введите число, например: 12`;
+        otherAmountErrorEl.textContent = 'Неверное значение. Введите число месяцев, например: 3';
         return;
     }
 
@@ -58,8 +62,8 @@ formEl.addEventListener('submit', handleSubmit, true);
 
 const monthsOfInterestAccrualEl = document.getElementById('period-input'); // количество месяцев начисления процентов по привлеченному вкладу
 const initialDepositAmountEl = document.getElementById('amount-input'); // первоначальная сумма вклада (капитал)
-const depositAmountErrorEl = document.getElementById('deposit-amount-error');
-const otherAmountErrorEl = document.getElementById('other-amount-error');
+const depositAmountErrorEl = document.getElementById('amount-error');
+const otherAmountErrorEl = document.getElementById('period-error');
 const totalEl = document.getElementById('total');
 const profitEl = document.getElementById('profit');
 const percentEl = document.getElementById('percent');
