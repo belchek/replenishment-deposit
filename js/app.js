@@ -16,7 +16,7 @@ function calculateDeposit(initialDepositAmount, monthsOfInterestAccrual) {
         annualsInterestRate = annualInterestRate[3];
     } else if (monthsOfInterestAccrual < termOfTheDeposit[4]) {
         annualsInterestRate = annualInterestRate[4];
-    }else if (monthsOfInterestAccrual === termOfTheDeposit[4]) {
+    } else if (monthsOfInterestAccrual === termOfTheDeposit[4]) {
         annualsInterestRate = annualInterestRate[5];
     }
     const depositAmountWithInterest = initialDepositAmount * (1 + annualsInterestRate * (monthsOfInterestAccrual / monthsOfInterestAccrual) / monthCalendarYear / 100) ** numberOfInterestPeriods; // сумма вклада с процентами
@@ -39,15 +39,33 @@ function handleSubmit(evt) {
     profitEl.textContent = '';
     percentEl.textContent = '';
 
+    const limitDepositAmount = [14999, 50000001];
+    const limitOtherAmount = [2, 19];
     const depositAmount = Number(initialDepositAmountEl.value);
     if (Number.isNaN(depositAmount)) {
         depositAmountErrorEl.textContent = 'Неверное значение. Введите число, например: 15000';
+        return;
+    }
+    if (depositAmount <= limitDepositAmount[0]) {
+        depositAmountErrorEl.textContent = 'Неверное значение. Минимальная сумма: 15000 ₽';
+        return;
+    }
+    if (depositAmount >= limitDepositAmount[1]) {
+        depositAmountErrorEl.textContent = 'Неверное значение. Максимальная сумма: 50000000 ₽';
         return;
     }
 
     const otherAmount = Number(monthsOfInterestAccrualEl.value);
     if (Number.isNaN(otherAmount)) {
         otherAmountErrorEl.textContent = 'Неверное значение. Введите число месяцев, например: 3';
+        return;
+    }
+    if (otherAmount <= limitOtherAmount[0]) {
+        otherAmountErrorEl.textContent = 'Неверное значение. Минимальный период: 3 месяца';
+        return;
+    }
+    if (otherAmount >= limitOtherAmount[1]) {
+        otherAmountErrorEl.textContent = 'Неверное значение. Максимальный период: 18 месяцев';
         return;
     }
 
