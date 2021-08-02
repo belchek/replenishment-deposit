@@ -1,32 +1,28 @@
 'use strict';
 
-function calculateDeposit(monthsOfInterestAccrual, initialDepositAmount) {
-    const numberOfInterestPeriods = monthsOfInterestAccrual; // число периодов начисления процентов
-    let annualInterestRate = [2, 2.2, 2.3, 2.6, 2.7]; // годовая процентная ставка
+function calculateDeposit(initialDepositAmount, monthsOfInterestAccrual) {
     const monthCalendarYear = 12; // количество месяцев в календарном году
-
-    if (numberOfInterestPeriods >= 3) {
-        annualInterestRate = annualInterestRate[0];
+    const numberOfInterestPeriods = monthsOfInterestAccrual; // число периодов начисления процентов
+    const termOfTheDeposit = [3, 6, 9, 12, 18];
+    const annualInterestRate = [0, 2.0, 2.2, 2.3, 2.6, 2.7]; // годовая процентная ставка
+    let annualsInterestRate = annualInterestRate[5];
+    if (monthsOfInterestAccrual < termOfTheDeposit[0]) {
+        annualsInterestRate = annualInterestRate[0];
+    } else if (monthsOfInterestAccrual < termOfTheDeposit[1]) {
+        annualsInterestRate = annualInterestRate[1];
+    } else if (monthsOfInterestAccrual < termOfTheDeposit[2]) {
+        annualsInterestRate = annualInterestRate[2];
+    } else if (monthsOfInterestAccrual < termOfTheDeposit[3]) {
+        annualsInterestRate = annualInterestRate[3];
+    } else if (monthsOfInterestAccrual < termOfTheDeposit[4]) {
+        annualsInterestRate = annualInterestRate[4];
     }
-    else if (numberOfInterestPeriods >= 6) {
-        annualInterestRate = annualInterestRate[1];
-    }
-    else if (numberOfInterestPeriods >= 9) {
-        annualInterestRate = annualInterestRate[2];
-    }
-    else if (numberOfInterestPeriods >= 12) {
-        annualInterestRate = annualInterestRate[3];
-    }
-    else if (numberOfInterestPeriods >= 18) {
-        annualInterestRate = annualInterestRate[4];
-    };
-    const depositAmountWithInterest = initialDepositAmount * (1 + annualInterestRate * monthsOfInterestAccrual / monthCalendarYear / 100) ** numberOfInterestPeriods; // сумма вклада с процентами
+    const depositAmountWithInterest = initialDepositAmount * (1 + annualsInterestRate * (monthsOfInterestAccrual / monthsOfInterestAccrual) / monthCalendarYear / 100) ** numberOfInterestPeriods; // сумма вклада с процентами
     const interestAmount = depositAmountWithInterest - initialDepositAmount; // сумма процентов (доход)
-    console.log(annualInterestRate);
     return {
         depositAmountWithInterest,
         interestAmount,
-        annualInterestRate,
+        annualsInterestRate,
     };
 }
 
@@ -54,11 +50,11 @@ function handleSubmit(evt) {
     const result = calculateDeposit(depositAmount, otherAmount);
     totalEl.textContent = result.depositAmountWithInterest.toFixed(0);
     profitEl.textContent = result.interestAmount.toFixed(0);
-    percentEl.textContent = result.annualInterestRate.toFixed(0);
+    percentEl.textContent = result.annualsInterestRate.toFixed(1);
 }
 
 const formEl = document.getElementById('deposit-form');
-formEl.onsubmit = handleSubmit;
+formEl.addEventListener('submit', handleSubmit, true);
 
 const monthsOfInterestAccrualEl = document.getElementById('period-input'); // количество месяцев начисления процентов по привлеченному вкладу
 const initialDepositAmountEl = document.getElementById('amount-input'); // первоначальная сумма вклада (капитал)
